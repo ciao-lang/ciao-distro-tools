@@ -641,7 +641,7 @@ EOF
 if [ x"$allbundles" == x"yes" ]; then
     # Run for all bundles
     case $1 in
-	publish|status|push)
+	pull|publish|status|push)
 	    true
 	    ;;
 	*)
