@@ -151,7 +151,7 @@ function filter_srcsubdir() {
     if [ x"$srcsubdir" == x"" ]; then
 	cat
     else
-	grep -e "^""$srcsubdir"
+	grep -e "^""$srcsubdir/"
     fi
 }
 
