@@ -97,7 +97,7 @@ function init_src_config() {
     branch=master
     srcgit=`git rev-parse --git-dir`
     srcgit=`realpath "$srcgit"`
-    srcremote="gitolite@ciao-lang.org:/ciao-devel"
+    srcremote="git@gitlab.software.imdea.org:ciao-lang/ciao-devel.git"
 }
 
 function init_config() { # input: srcbundle (needs init_src_config)

@@ -143,7 +143,7 @@
 %  
 %  Source repositories:
 %  
-%    - **Local repositories**: run on a terminal "`ssh gitolite\@ciao-lang.org`"
+%    - **Local repositories** at gitlab: @href{https://gitlab.software.imdea.org/ciao-lang}
 %    - **Public repositories** at github: @href{https://github.com/ciao-lang}
 %  
 %  Binaries:
