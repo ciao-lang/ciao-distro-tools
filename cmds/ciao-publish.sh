@@ -14,8 +14,8 @@ set -e
 function realpath() {
     local d=`dirname "$1"`
     if ! [ -r "$d" ]; then
-	printf "%s" "$1" # does not exists, get unmodified
-	return
+        printf "%s" "$1" # does not exists, get unmodified
+        return
     fi
     d=`cd "$d"; pwd`
     local b=`basename "$1"`
@@ -43,11 +43,11 @@ function list_bundles() { # (needs init_src_config)
     pushd "$srcgit" > /dev/null 2>&1
     cd ../bndls
     for b in *; do
-	if [ -r "$b"/Manifest ] || [ -r "$b"/Manifest.pl ]; then
-	    if [ ! -r "$b"/NODISTRIBUTE ]; then
-		echo $b
-	    fi
-	fi
+        if [ -r "$b"/Manifest ] || [ -r "$b"/Manifest.pl ]; then
+            if [ ! -r "$b"/NODISTRIBUTE ]; then
+                echo $b
+            fi
+        fi
     done
     popd > /dev/null 2>&1
 }
@@ -64,14 +64,14 @@ function detect_bundle() { # (needs init_src_config)
     tmp=`pwd`
     curr="${tmp#$rootdir/bndls/}"
     if [ "$tmp" != "$curr" ]; then # inside bndls/
-	tmp=$curr
-	while [ "$tmp" != "." ]; do
-	    curr=$tmp
-	    tmp=`dirname "$tmp"`
-	done
-	srcbundle="$curr"
+        tmp=$curr
+        while [ "$tmp" != "." ]; do
+            curr=$tmp
+            tmp=`dirname "$tmp"`
+        done
+        srcbundle="$curr"
     else
-	srcbundle="$root_bundle" # The root bundle
+        srcbundle="$root_bundle" # The root bundle
     fi
 }
 
@@ -80,9 +80,9 @@ function detect_bundle() { # (needs init_src_config)
 
 function src_config_bundle() {
     if [ x"$srcbundle" == x"ciao" ]; then
-	srcsubdir="" # (Prefix from src)
+        srcsubdir="" # (Prefix from src)
     else
-	srcsubdir="bndls/""$srcbundle" # TODO: customize?
+        srcsubdir="bndls/""$srcbundle" # TODO: customize?
     fi
     srclicense="LGPL" # TODO: extract from Manifest.pl
 }
@@ -149,9 +149,9 @@ trap 'rm -rf "$tmpd"' EXIT
 
 function filter_srcsubdir() {
     if [ x"$srcsubdir" == x"" ]; then
-	cat
+        cat
     else
-	grep -e "^""$srcsubdir/"
+        grep -e "^""$srcsubdir/"
     fi
 }
 
@@ -181,7 +181,7 @@ EOF
 
 function patch_readme() {
     if [ -r README.md ]; then
-	mv README.md README.md-old
+        mv README.md README.md-old
     fi
     cat > README.md <<EOF
 [![Build Status](https://travis-ci.org/ciao-lang/ciao.svg)](https://travis-ci.org/ciao-lang/ciao)
@@ -189,7 +189,7 @@ function patch_readme() {
 
 EOF
     if [ -r README.md-old ]; then
-	cat README.md-old >> README.md
+        cat README.md-old >> README.md
     fi
     cat >> README.md <<EOF
 
@@ -206,14 +206,14 @@ function patch_ci_scripts() {
 
 function patch_license() {
     case "$srclicense" in
-	LGPL)
-	    cp "$_base/../licenses/LGPL" LGPL
-	    ;;
-	GPL)
-	    cp "$_base/../licenses/GPL" GPL
-	    ;;
-	*) # None
-	    ;;
+        LGPL)
+            cp "$_base/../licenses/LGPL" LGPL
+            ;;
+        GPL)
+            cp "$_base/../licenses/GPL" GPL
+            ;;
+        *) # None
+            ;;
     esac
 }
 
@@ -221,14 +221,14 @@ function patch_tree() {
     pushd "$treedir" > /dev/null 2>&1
     # Patch github specific (depends on bundle)
     if [ x"$srcbundle" == x"ciao" ]; then
-	rm -f COPYRIGHT LGPL GPL # Outdated...
-	patch_readme
-	patch_ci_scripts
+        rm -f COPYRIGHT LGPL GPL # Outdated...
+        patch_readme
+        patch_ci_scripts
     else
-	# Remove ACTIVATE mark
-	if [ -r ACTIVATE ]; then
-	    rm ACTIVATE
-	fi
+        # Remove ACTIVATE mark
+        if [ -r ACTIVATE ]; then
+            rm ACTIVATE
+        fi
     fi
     patch_license
     popd > /dev/null 2>&1
@@ -244,10 +244,10 @@ function count_components() { # path
 function untar_srcsubdir() {
     local comps
     if [ x"$srcsubdir" == x"" ]; then
-	tar -xf -
+        tar -xf -
     else
-	comps=`count_components "$srcsubdir"`
-	tar -xf - --strip-components=$comps
+        comps=`count_components "$srcsubdir"`
+        tar -xf - --strip-components=$comps
     fi
 }
 
@@ -266,20 +266,20 @@ function commit_tree() {
     # Update index (add new files, update modified files, remove missing files) to match the working tree
     git --git-dir="$dstgit" add --dry-run -A > "$f_tmplog"
     if ! [ -s "$f_tmplog" ]; then # No expected changes
-	printf "Commit $id does not contain public changes\n"
-	# Save $id as the latest without public changes
-	printf "%s" "$id" > "$dstgit_last_nopub_id"
+        printf "Commit $id does not contain public changes\n"
+        # Save $id as the latest without public changes
+        printf "%s" "$id" > "$dstgit_last_nopub_id"
     else
-	printf "Commit $id contains public changes\n"
-	git --git-dir="$dstgit" add -A | gitprefix
-	if git --git-dir="$dstgit" commit --author="$author_str" --date="$date_str" -F "$commit_msg" > "$f_tmplog"; then
+        printf "Commit $id contains public changes\n"
+        git --git-dir="$dstgit" add -A | gitprefix
+        if git --git-dir="$dstgit" commit --author="$author_str" --date="$date_str" -F "$commit_msg" > "$f_tmplog"; then
             cat "$f_tmplog" | gitprefix
-	    did_commit=yes
-	else
+            did_commit=yes
+        else
             cat "$f_tmplog" | gitprefix
-	    # TODO: This should be a bug (we checked before with "add --dry-run")
-	    printf "Could not commit $id! (does it really contain public changes?)\n"
-	fi
+            # TODO: This should be a bug (we checked before with "add --dry-run")
+            printf "Could not commit $id! (does it really contain public changes?)\n"
+        fi
     fi
     popd > /dev/null 2>&1
 }
@@ -303,49 +303,49 @@ function prepare_tree() { # (env: id)
 function publish_commits() {
     did_commit=no
     if [ $# == 0 ]; then
-	get_latest_commit
+        get_latest_commit
     else
-	id=$1
+        id=$1
     fi
     local target_id=$id
     local l_id
     check_dst_id # (needed for unpublished commits)
     for l_id in `unpublished_commits`; do
-	id=$l_id
-	get_public_files
-	get_commit_info
-	compose_msg
-	prepare_tree
-	commit_tree
-	if [ $l_id == $target_id ]; then
-	    break
-	fi
+        id=$l_id
+        get_public_files
+        get_commit_info
+        compose_msg
+        prepare_tree
+        commit_tree
+        if [ $l_id == $target_id ]; then
+            break
+        fi
     done
     if [ x"$did_commit" == x"yes" ]; then
-	after_commit_help
+        after_commit_help
     fi
 }
 
 function squash_commit() {
     did_commit=no
     if [ $# == 0 ]; then
-	get_latest_commit
+        get_latest_commit
     else
-	id=$1
+        id=$1
     fi
     get_public_files
     get_commit_info
     if [ x"`dst_id`" == x"" ]; then
-	rawbody="Initial commit" # TODO: customize
+        rawbody="Initial commit" # TODO: customize
     fi
     compose_msg
     prepare_tree
     if [ $dryrun == "no" ]; then
-	commit_tree
+        commit_tree
     else
-	drytreedir=/tmp/dry-treedir-$$
-	mv "$treedir" "$drytreedir"
-	cat <<EOF
+        drytreedir=/tmp/dry-treedir-$$
+        mv "$treedir" "$drytreedir"
+        cat <<EOF
 
 Running in DRY-RUN mode. No commit has been made.
 You can inspect the tree at:
@@ -355,7 +355,7 @@ EOF
     fi
     #
     if [ x"$did_commit" == x"yes" ]; then
-	after_commit_help
+        after_commit_help
     fi
 }
 
@@ -382,7 +382,7 @@ EOF
 function after_push_help() {
     # TODO: configure per bundle
     if [ x"$srcbundle" == x"ciao" ]; then
-	cat <<EOF
+        cat <<EOF
 
 NOTES:
 
@@ -412,11 +412,11 @@ function dst_id() {
 # (Uses $dstgit_last_nopub_id if available)
 function unpublished_commits() {
     if [ -r "$dstgit_last_nopub_id" ]; then
-	local nopub_id=`cat "$dstgit_last_nopub_id"`
-	# use 'sed' to stop if nopub_id is found
-	unpublished_commits_ | sed -n '/'$nopub_id'/q;p' | $revtail
+        local nopub_id=`cat "$dstgit_last_nopub_id"`
+        # use 'sed' to stop if nopub_id is found
+        unpublished_commits_ | sed -n '/'$nopub_id'/q;p' | $revtail
     else
-	unpublished_commits_ | $revtail
+        unpublished_commits_ | $revtail
     fi
 }
 
@@ -428,11 +428,11 @@ function unpublished_commits_() {
 
 function check_dst_id() {
     if [ x"`dst_id`" == x"" ]; then
-	cat <<EOF
+        cat <<EOF
 ERROR: Could not find any 'Src-commit' mark in the publishing repository.
 Please specify the first commit Id in 'publish' or 'squash'.
 EOF
-	exit 1
+        exit 1
     fi 
 }
 
@@ -444,7 +444,7 @@ Latest commit: $id
 Commit at dstgit: $dst_id
 EOF
     if [ -r "$dstgit_last_nopub_id" ]; then
-	printf "Last known commit without public changes: %s\n" `cat "$dstgit_last_nopub_id"`
+        printf "Last known commit without public changes: %s\n" `cat "$dstgit_last_nopub_id"`
     fi
     check_dst_id # (needed for unpublished commits)
     cat <<EOF
@@ -470,8 +470,8 @@ function gitprefix() {
 
 function check_repos() {
     if ! git --git-dir="$srcgit" remote -v | grep "$srcremote" > /dev/null; then
-	config_summary
-	cat <<EOF
+        config_summary
+        cat <<EOF
 ERROR: Source directory does not seem the right clone. 
 
   Make sure that directory:
@@ -480,12 +480,12 @@ ERROR: Source directory does not seem the right clone.
     $srcremote
 
 EOF
-	exit 1
+        exit 1
     fi
     if ! [ -x "$dstgit" ] || \
        ! git --git-dir="$dstgit" remote -v | grep "$dstremote" > /dev/null; then
-	config_summary
-	cat <<EOF
+        config_summary
+        cat <<EOF
 ERROR: Could not find a valid local clone for publishing
 
   Make sure that this directory exists:
@@ -497,7 +497,7 @@ If the repository for publishing does not exists yet, you can use the
 'init' command of this script to create a new empty repository.
 
 EOF
-	exit 1
+        exit 1
     fi
     config_short_summary
 }
@@ -515,8 +515,8 @@ EOF
        exit 1
     fi
     if ! git ls-remote "$dstremote" > /dev/null 2>&1 ; then
-	# TODO: add support to GitHub API if needed
-	cat <<EOF
+        # TODO: add support to GitHub API if needed
+        cat <<EOF
 NOTE: Remote repository must be created manually.
 
 Please login to https://github.com and create a new empty
@@ -525,7 +525,7 @@ repository for $dstremote.
 Then try again the 'init' command.
 
 EOF
-	exit 1
+        exit 1
     fi
     cat <<EOF
 Initializing a publishing repository at:
@@ -556,10 +556,10 @@ function push_dstgit() { # [push args...]
     # than simply 'git push' but assumes remote is OK)
     cmd_git_dstgit log origin/master..master > "$f_tmplog"
     if ! [ -s "$f_tmplog" ]; then # No pending commits
-	printf "No remaining commits to push\n"
+        printf "No remaining commits to push\n"
     else
-	cmd_git_dstgit push "$@" | gitprefix
-	after_push_help 
+        cmd_git_dstgit push "$@" | gitprefix
+        after_push_help 
     fi
 }
 
@@ -568,22 +568,22 @@ srcbundle= # none
 pubrepos="$HOME"/REPOS-ciao-publish
 while [ -t ]; do
     case $1 in
-	"--bundle") # BundleName
-	    shift
-	    srcbundle=$1
-	    shift
-	    ;;
-	"--all")
-	    shift
-	    allbundles=yes
-	    ;;
-	"--pubrepos")
-	    shift
-	    pubrepos=$1
-	    shift
-	    ;;
-	*)
-	    break
+        "--bundle") # BundleName
+            shift
+            srcbundle=$1
+            shift
+            ;;
+        "--all")
+            shift
+            allbundles=yes
+            ;;
+        "--pubrepos")
+            shift
+            pubrepos=$1
+            shift
+            ;;
+        *)
+            break
     esac
 done
 
@@ -592,7 +592,7 @@ if ! [ -x "$pubrepos" ]; then
 ERROR: Directory for publishing repository clones do not exist or is not readable:
 $pubrepos
 EOF
-	exit 1
+        exit 1
 fi
 
 function run() { # env: srcbundle
@@ -600,33 +600,33 @@ function run() { # env: srcbundle
     init_config
     dryrun=no
     case $1 in
-	init)
-	    shift; init_dstgit; after_init_help ;;
-	list)
-	    shift; list_bundles ;;
-	info)
-	    shift; config_summary ;;
-	pull)
-	    shift; check_repos; pull_dstgit ;;
-	publish)
-	    shift; check_repos; publish_commits "$@" ;;
-	squash)
-	    shift; check_repos; squash_commit "$@" ;;
-	dry-squash)
-	    shift; dryrun=yes; check_repos; squash_commit "$@" ;;
-	status)
-	    shift; check_repos; status "$@" ;;
-	push)
-	    shift; check_repos; push_dstgit ;;
-	rebase)
-	    shift; check_repos; cmd_git_dstgit rebase "$@" ;;
-	*)
-	    cat <<EOF
+        init)
+            shift; init_dstgit; after_init_help ;;
+        list)
+            shift; list_bundles ;;
+        info)
+            shift; config_summary ;;
+        pull)
+            shift; check_repos; pull_dstgit ;;
+        publish)
+            shift; check_repos; publish_commits "$@" ;;
+        squash)
+            shift; check_repos; squash_commit "$@" ;;
+        dry-squash)
+            shift; dryrun=yes; check_repos; squash_commit "$@" ;;
+        status)
+            shift; check_repos; status "$@" ;;
+        push)
+            shift; check_repos; push_dstgit ;;
+        rebase)
+            shift; check_repos; cmd_git_dstgit rebase "$@" ;;
+        *)
+            cat <<EOF
 Bad command '$1', use 'help' for help.
 
 EOF
-	    exit 1
-	    ;;
+            exit 1
+            ;;
     esac
     cleanup_tmpd
 }
@@ -634,28 +634,28 @@ EOF
 if [ x"$allbundles" == x"yes" ]; then
     # Run for all bundles
     case $1 in
-	pull|publish|status|push)
-	    true
-	    ;;
-	*)
-	    cat <<EOF
+        pull|publish|status|push)
+            true
+            ;;
+        *)
+            cat <<EOF
 ERROR: '--all' is not allowed in command '$1'
 
 EOF
-	    exit 1
-	    ;;
+            exit 1
+            ;;
     esac
     init_src_config
     for b in `list_bundles`; do
-	srcbundle=$b
-	run "$@"
-	echo
+        srcbundle=$b
+        run "$@"
+        echo
     done
 else
     init_src_config
     if [ x"$srcbundle" == x"" ]; then
-	# Guess the bundle if it is not provided
-	detect_bundle
+        # Guess the bundle if it is not provided
+        detect_bundle
     fi
     run "$@"
 fi
