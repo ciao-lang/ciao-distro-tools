@@ -163,7 +163,7 @@
 %    - **Docker** image (with pointers to docker hub account): @href{https://github.com/ciao-lang/docker-ciao}
 %  
 %  Other binaries (not ready):
-%  	 
+%        
 %    - **Launchpad (Ubuntu)** account for Ciao team: @href{https://launchpad.net/~ciao-lang}
 %      [Created with `jfmc` user, ask for membership]
 
@@ -173,27 +173,27 @@
 
 :- export(main/1).
 main([H]) :-
-	( H = help ; H = '-h' ; H = '--help' ),
-	!,
-	show_help.
+    ( H = help ; H = '-h' ; H = '--help' ),
+    !,
+    show_help.
 main(Args) :-
-	bundle_path('ciao-distro-tools', 'cmds/ciao-publish.sh', Cmd),
-	process_call(Cmd, Args, [status(S)]),
-	halt(S).
+    bundle_path('ciao-distro-tools', 'cmds/ciao-publish.sh', Cmd),
+    process_call(Cmd, Args, [status(S)]),
+    halt(S).
 
 show_help :-
-	write_string("Usage: ciao-publish.sh [OPTS] CMD
+    write_string("Usage: ciao-publish.sh [OPTS] CMD
 
 Publish the current git repository through another (public) repository.
 
 Options:
 
   --bundle Bundle
-                   Select bundle Bundle. Use 'ciao' as the special root
-		   bundle (containing core, builder, etc.)
+               Select bundle Bundle. Use 'ciao' as the special root
+               bundle (containing core, builder, etc.)
   --all            Select all bundles
   --pubrepos DIR   Select directory containing the publishing repository
-                   clones (~/REPOS-ciao-publish by default)
+               clones (~/REPOS-ciao-publish by default)
 
 Available commands:
 
@@ -203,9 +203,9 @@ Available commands:
   info             Show publishing info about a bundle
   pull             Pull (public repo)
   publish [Id]     Update (git add -A) from the latest or given commit
-                   (for each unpublished commit)
+               (for each unpublished commit)
   squash [Id]      Like publish, but squash into a single commit
-                   (more efficient than rebase but loses history)
+               (more efficient than rebase but loses history)
   dry-squash [Id]  Simulate squash (do not commit, leave the tree in a temporary dir)
   status           Show status (unpublished commits)
   push [args]      Push (public repo)
