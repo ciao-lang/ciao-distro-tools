@@ -397,6 +397,14 @@ NOTES:
 
     Output: https://bintray.com/ciao-lang/builds/ciao/latest/view
 
+  - Remember to tag and push tags (if needed):
+    E.g.,
+      cd $pubrepos/github.com/ciao-lang/ciao
+      git tag vMAJOR.MINOR.PATCH
+      git push origin vMAJOR.MINOR.PATCH
+
+  - Remember to change default_vers_bin=MAJOR.MINOR.PATCH in ciao-boot.sh
+
 EOF
     fi
 }
